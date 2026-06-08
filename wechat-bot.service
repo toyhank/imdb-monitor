@@ -1,0 +1,17 @@
+[Unit]
+Description=WeChat ClawBot Daemon for IMDB Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/IMDB/Augment
+ExecStart=/IMDB/Augment/venv/bin/python wechat_bot.py --non-interactive
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=wechat-bot
+
+[Install]
+WantedBy=multi-user.target

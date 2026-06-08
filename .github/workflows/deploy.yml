@@ -32,6 +32,10 @@ jobs:
             --exclude='*.log' \
             ./ ubuntu@138.2.37.110:/IMDB/Augment/
 
+      - name: Install Dependencies on Server
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@138.2.37.110 "/IMDB/Augment/venv/bin/pip install -r /IMDB/Augment/requirements.txt"
+
       - name: Restart Monitor Service
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@138.2.37.110 "sudo systemctl restart imdb-monitor.service"

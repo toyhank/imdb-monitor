@@ -27,13 +27,47 @@ class Notifier:
         
         success = True
         
-        if self.config.NOTIFICATION_TYPE in ['webhook', 'both']:
+        # 支持以逗号分隔的多种通知方式，如 "webhook,wechat_clawbot"
+        notification_types = [t.strip() for t in self.config.NOTIFICATION_TYPE.split(',')]
+        
+        if 'webhook' in notification_types or 'both' in self.config.NOTIFICATION_TYPE:
             success &= self._send_webhook(notification_data)
 
-        if self.config.NOTIFICATION_TYPE in ['email', 'both']:
+        if 'email' in notification_types or 'both' in self.config.NOTIFICATION_TYPE:
             success &= self._send_email(notification_data)
 
+        if 'wechat_clawbot' in notification_types:
+            success &= self._send_wechat_clawbot(notification_data)
+
         return success
+
+    def _send_wechat_clawbot(self, data: Dict) -> bool:
+        """发送微信ClawBot通知"""
+        if not self.config.WECHAT_CLAWBOT_PUSH_URL:
+            logger.error("WeChat ClawBot 推送 URL 未配置")
+            return False
+
+        try:
+            # 使用纯文本邮件格式作为微信推送消息内容，更加详细直观
+            text_content = self._create_email_text(data)
+            
+            response = requests.post(
+                self.config.WECHAT_CLAWBOT_PUSH_URL,
+                json={"text": text_content},
+                headers={'Content-Type': 'application/json'},
+                timeout=30
+            )
+            response.raise_for_status()
+            result = response.json()
+            if result.get("success"):
+                logger.info("微信ClawBot通知发送成功")
+                return True
+            else:
+                logger.error(f"微信ClawBot通知发送失败: {result.get('error')}")
+                return False
+        except Exception as e:
+            logger.error(f"微信ClawBot通知发送异常: {e}")
+            return False
 
     def _get_image_fetcher(self):
         """延迟加载图片获取器"""

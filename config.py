@@ -13,9 +13,10 @@ class Config:
     
     # 通知设置
     WEBHOOK_URL = os.getenv('WEBHOOK_URL', '')
-    NOTIFICATION_TYPE = os.getenv('NOTIFICATION_TYPE', 'webhook')  # webhook, email, both
+    NOTIFICATION_TYPE = os.getenv('NOTIFICATION_TYPE', 'webhook')  # webhook, email, both, wechat_clawbot
     WEBHOOK_TYPE = os.getenv('WEBHOOK_TYPE', 'wework')  # wework, slack, generic
     ENABLE_MOVIE_IMAGES = os.getenv('ENABLE_MOVIE_IMAGES', 'true').lower() == 'true'
+    WECHAT_CLAWBOT_PUSH_URL = os.getenv('WECHAT_CLAWBOT_PUSH_URL', 'http://127.0.0.1:5001/send')
     
     # 邮件设置
     EMAIL_SMTP_SERVER = os.getenv('EMAIL_SMTP_SERVER', 'smtp.gmail.com')
