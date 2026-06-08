@@ -1,0 +1,37 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH Configuration
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 138.2.37.110 >> ~/.ssh/known_hosts
+
+      - name: Deploy Code via Rsync
+        run: |
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa" \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='config.env' \
+            --exclude='api_config.json' \
+            --exclude='oracle' \
+            --exclude='*.db' \
+            --exclude='*.log' \
+            ./ ubuntu@138.2.37.110:/IMDB/Augment/
+
+      - name: Restart Monitor Service
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@138.2.37.110 "sudo systemctl restart imdb-monitor.service"

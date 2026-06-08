@@ -1,0 +1,40 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database & Logs
+*.db
+*.log
+logs/
+backups/
+
+# Project configuration
+config.env
+api_config.json
+oracle
+
+# Exclude temp files
+*.tmp
+*.bak
+*.backup
+temp/

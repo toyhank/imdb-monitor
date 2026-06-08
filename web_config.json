@@ -1,0 +1,7 @@
+{
+  "webhook_key": "luanyingwei1985",
+  "notify_new": true,
+  "notify_removed": true,
+  "notify_rank_changes": true,
+  "enable_images": true
+}

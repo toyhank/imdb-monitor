@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  imdb-monitor:
+    build: .
+    container_name: imdb-monitor
+    restart: unless-stopped
+
+    # 端口映射
+    ports:
+      - "5000:5000"  # Web界面端口
+
+    # 环境变量（可以覆盖config.env中的设置）
+    environment:
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - NOTIFICATION_TYPE=${NOTIFICATION_TYPE:-webhook}
+      - EMAIL_USERNAME=${EMAIL_USERNAME:-}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
+      - EMAIL_TO=${EMAIL_TO:-}
+      - SCHEDULE_TIME=${SCHEDULE_TIME:-09:00}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - TZ=Asia/Shanghai
+      - PYTHONUNBUFFERED=1
+
+    # 数据卷挂载
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+      - ./config.env:/app/config.env:ro
+    
+    # 网络设置
+    networks:
+      - imdb-network
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('https://www.imdb.com', timeout=10)"]
+      interval: 30m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  imdb-network:
+    driver: bridge
+
+volumes:
+  imdb-data:
+    driver: local
+  imdb-logs:
+    driver: local
