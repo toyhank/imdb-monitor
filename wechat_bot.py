@@ -109,7 +109,7 @@ def choose_provider(default_provider: str) -> str:
         print("输入无效，请重新选择。")
 
 
-def prompt_provider_config(provider: str, old_cfg: dict | None = None) -> dict:
+def prompt_provider_config(provider: str, old_cfg = None) -> dict:
     defaults = PROVIDERS[provider]
     old_cfg = old_cfg or {}
     print(f"\n配置 {defaults['label']}：")
